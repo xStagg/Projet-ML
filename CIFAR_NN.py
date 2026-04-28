@@ -16,13 +16,12 @@ def _():
     import pickle
     from PIL import Image
 
-    return F, mo, nn, np, torch, tqdm
+    return F, mo, nn, np, pickle, torch, tqdm
 
 
 @app.cell
-def _(np):
+def _(np, pickle):
     def unpickle(file):
-        import pickle
         with open(file, 'rb') as fo:
             dict = pickle.load(fo, encoding='bytes')
         return dict
@@ -121,11 +120,11 @@ def _(MLP, nn, torch, x_test_gray, x_train_gray, y_test, y_train):
 
 @app.cell
 def _(torch, tqdm):
-    def train(model, criterion, optimizer, x_train, y_train, x_test, y_test, epochs=10):
+    def train(model, criterion, optimizer, x_train, y_train, x_test, y_test, epochs=10, batch_size=256):
         for epoch in range(epochs):
-            for i in tqdm(range(0, len(x_train), 64)):
-                x_batch = x_train[i : i + 64]
-                y_batch = y_train[i : i + 64]
+            for i in tqdm(range(0, len(x_train), batch_size)):
+                x_batch = x_train[i : i + batch_size]
+                y_batch = y_train[i : i + batch_size]
                 model.train()
                 optimizer.zero_grad()
                 output = model(x_batch)
@@ -157,6 +156,12 @@ def _(
     y_train_tensor,
 ):
     train(model, criterion, optimizer, x_train_tensor, y_train_tensor, x_test_tensor, y_test_tensor)
+    return
+
+
+@app.cell
+def _(model):
+    model.eval()
     return
 
 
