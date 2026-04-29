@@ -192,13 +192,6 @@ def _(np, pad_image):
 
 
 @app.cell
-def _(filters_2d):
-    F, kh, kw, C = filters_2d.shape
-    W = filters_2d.reshape(F, -1)  # (F, 9*C)
-    return
-
-
-@app.cell
 def _(im2col):
     def conv3d_batch(image, filters, bias=None):
         H, W, C = image.shape
@@ -679,16 +672,14 @@ def _(
     # Entraînement sur un batch d'images
     num_epochs = 1
     nb_img = 1000
-    with tqdm(total=num_epochs*nb_img) as bar:
-        for epoch in range(num_epochs):
-            total_loss = 0
-            for i in tqdm(range(nb_img)):  # Limiter à 10 images pour l'exemple
-                image = x_train[i].reshape(32, 32, 3)
-                label = y_train[i]
-                loss = train_step(image, label, filters_2d, filters_3d, filters_3d_2, A, B)
-                total_loss += loss
-                bar.update(1)
-                bar.set_postfix({"Loss": total_loss / (i+1)})
+    for epoch in range(num_epochs):
+        total_loss = 0
+        for i in tqdm(range(nb_img)):  # Limiter à 10 images pour l'exemple
+            image = x_train[i].reshape(32, 32, 3)
+            label = y_train[i]
+            loss = train_step(image, label, filters_2d, filters_3d, filters_3d_2, A, B)
+            total_loss += loss
+
     return
 
 
