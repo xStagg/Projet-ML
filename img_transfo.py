@@ -1,5 +1,4 @@
 from PIL import Image, ImageOps, ImageEnhance
-from torchvision import transforms
 import numpy as np
 import matplotlib.pyplot as plt
 
